@@ -76,13 +76,15 @@
         }
 
         .tool-card {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--primary-color);
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff00;
             border-radius: 5px;
             padding: 20px;
+            margin: 10px;
             text-align: center;
-            cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .tool-card:hover {
@@ -174,6 +176,59 @@
             opacity: 0.1;
         }
 
+        .recent-activity {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        #activityLog {
+            min-height: 200px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 0 5px 5px 0;
+        }
+
+        .activity-item.success {
+            color: #00ff00;
+            border-left-color: #00ff00;
+        }
+
+        .activity-item.failed {
+            color: #ff0000;
+            border-left-color: #ff0000;
+        }
+
+        .activity-item.warning {
+            color: #ffff00;
+            border-left-color: #ffff00;
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 0.8em;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
         /* Mobile Responsive Styles */
         @media screen and (max-width: 768px) {
             .container {
@@ -221,20 +276,25 @@
         </div>
 
         <div class="tools-grid">
-            <div class="tool-card instagram" onclick="selectTool('instagram')">
+            <div class="tool-card">
                 <h2>Instagram Hacker</h2>
-                <p>Advanced Instagram security testing tool</p>
-                <button>Select Tool</button>
+                <p>Advanced Instagram Security Testing Tool</p>
+                <button onclick="selectTool('instagram')">Select Tool</button>
             </div>
-
-            <div class="tool-card facebook" onclick="selectTool('facebook')">
+            <div class="tool-card">
                 <h2>Facebook Hacker</h2>
-                <p>Advanced Facebook security testing tool</p>
-                <button>Select Tool</button>
+                <p>Advanced Facebook Security Testing Tool</p>
+                <button onclick="selectTool('facebook')">Select Tool</button>
             </div>
         </div>
 
-        <div id="access-form" class="access-form">
+        <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div id="activityLog"></div>
+        </div>
+
+        <div id="accessForm" style="display: none;">
+            <h2 id="toolTitle" style="text-align: center; margin-bottom: 20px;"></h2>
             <div class="input-group">
                 <label for="access-code">Enter Access Code:</label>
                 <input type="password" id="access-code" placeholder="Enter the access code...">
@@ -295,7 +355,8 @@
         function selectTool(tool) {
             selectedTool = tool;
             document.querySelector('.tools-grid').style.display = 'none';
-            document.getElementById('access-form').style.display = 'flex';
+            document.getElementById('accessForm').style.display = 'block';
+            document.getElementById('toolTitle').textContent = tool === 'instagram' ? 'Instagram Hacker' : 'Facebook Hacker';
         }
 
         function checkAccess() {
@@ -314,6 +375,78 @@
                 document.getElementById('access-code').value = '';
             }
         }
+
+        // Activity generation code
+        const activities = [
+            {
+                type: 'success',
+                message: 'Successfully breached Instagram account: @u*****'
+            },
+            {
+                type: 'success',
+                message: 'Account accessed: u****@gmail.com'
+            },
+            {
+                type: 'warning',
+                message: 'New brute force vulnerability detected in Facebook API'
+            },
+            {
+                type: 'failed',
+                message: 'Failed attempt: Instagram account (protected)'
+            },
+            {
+                type: 'success',
+                message: 'Session established: Location US, IP: 192.168.***.***'
+            },
+            {
+                type: 'warning',
+                message: 'System update: Enhanced phishing protection activated'
+            },
+            {
+                type: 'success',
+                message: 'Credentials obtained: username: @u*****, password: ********'
+            },
+            {
+                type: 'success',
+                message: 'New connection established from UK'
+            },
+            {
+                type: 'warning',
+                message: 'Security alert: Multiple login attempts detected from IP: 192.168.***.***'
+            },
+            {
+                type: 'success',
+                message: 'Database access granted: *** records processed'
+            }
+        ];
+
+        function updateActivityLog() {
+            const activityLog = document.getElementById('activityLog');
+            if (!activityLog) return;
+
+            // Clear previous activities
+            activityLog.innerHTML = '';
+
+            // Get 5 random activities
+            const shuffled = [...activities].sort(() => 0.5 - Math.random());
+            const selectedActivities = shuffled.slice(0, 5);
+
+            // Add new activities
+            selectedActivities.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = `activity-item ${activity.type}`;
+                const time = new Date().toLocaleTimeString();
+                item.innerHTML = `
+                    <div>${activity.message}</div>
+                    <div class="activity-time">${time}</div>
+                `;
+                activityLog.appendChild(item);
+            });
+        }
+
+        // Initialize and update activity log
+        updateActivityLog();
+        setInterval(updateActivityLog, 3000);
 
         // Prevent right-click and keyboard shortcuts
         document.addEventListener('contextmenu', event => event.preventDefault());
